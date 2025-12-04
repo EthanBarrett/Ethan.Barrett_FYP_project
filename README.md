@@ -30,7 +30,7 @@ For the future it is improtant to plan what changes the AI and enviroment will g
 
 As of so far for the project the Gnatt chart saids it is in the planning phase. This means time is needed to plan and put together. The planning phase includes how the AI and world will affect the players gameplay, The first plan that came to mind was to count how many shots they player had shot and see how many had hit an enemy and how many did not then with those numbers if the players accuracy is above 50% the AI's movement will change in the next stage to make it harder however if it is lower then 50% the AI will have a simpler movement. The is to change both the world and AI depending on the players perfomance in hope this will make the experience more engaging. For this plan the hardest part will be keeping the game balanced. 
 
-Since AI is complicated reasearch will be done during this phase to help with creating the AI.
+Since AI is complicated reasearch will be done during this phase to help with creating the AI. Updating the Gnatt chart will also be important as more detailed version will be needed to keep track of what is needed next, for example what features need to added next and which are the most important.
 
 
 
