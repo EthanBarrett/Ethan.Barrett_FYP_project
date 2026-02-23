@@ -16,6 +16,8 @@ public class PlayerShoot : MonoBehaviour
             Rigidbody rb = bullet.GetComponent<Rigidbody>();
             rb.linearVelocity = bulletSpawn.forward * bulletspeed;
 
+            //save player shots
+            PlayerStats.Instance.SaveShots();
             
         }
 

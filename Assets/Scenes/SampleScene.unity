@@ -1357,7 +1357,7 @@ Transform:
   m_GameObject: {fileID: 419917429}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -129.6, y: 4.29, z: -3.5}
+  m_LocalPosition: {x: -129.6, y: 6.46, z: -3.5}
   m_LocalScale: {x: 2.264, y: 2.264, z: 2.264}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -9182,6 +9182,7 @@ GameObject:
   - component: {fileID: 1535985679}
   - component: {fileID: 1535985681}
   - component: {fileID: 1535985680}
+  - component: {fileID: 1535985682}
   m_Layer: 6
   m_Name: Player
   m_TagString: Player
@@ -9291,6 +9292,20 @@ MonoBehaviour:
     m_Bits: 8
   groundDrag: 5
   orientation: {fileID: 1850034323}
+--- !u!114 &1535985682
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1535985675}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b0c40709e791df449f343ad9357a843, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bulletsFired: 0
+  bulletsHit: 0
 --- !u!43 &1557623587
 Mesh:
   m_ObjectHideFlags: 0

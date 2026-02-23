@@ -31,7 +31,7 @@ public class enemyChaseDirectPlayer : EnemyChaseBase
             enemy.StateMachine.ChangeState(enemy.IdleState);
             return;
         }
-
+         
         enemy.agent.SetDestination(_player.position);
 
         if (enemy.IsWithinAttack)

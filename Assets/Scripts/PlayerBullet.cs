@@ -14,6 +14,8 @@ public class PlayerBullet : MonoBehaviour
         if (collision.gameObject.CompareTag("Enemy"))
         {
             Destroy(collision.gameObject);
+            //save bullet hits
+            PlayerStats.Instance.SaveHits();
         }
        
         Destroy(gameObject);
