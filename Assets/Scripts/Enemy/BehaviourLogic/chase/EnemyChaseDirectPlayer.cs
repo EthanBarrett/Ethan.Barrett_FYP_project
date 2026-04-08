@@ -13,7 +13,24 @@ public class enemyChaseDirectPlayer : EnemyChaseBase
 
         enemy.agent.isStopped = false;
 
-        enemy.agent.speed = 7f;
+
+        float accuracy = PlayerStats.Instance.fightResults;
+
+        if (accuracy > 70f)
+        {
+            Debug.Log("speed = 20");
+            enemy.agent.speed = 20f;
+        }
+        else if (accuracy < 30f)
+        {
+            Debug.Log("speed = 2");
+            enemy.agent.speed = 2f;
+        }
+        else
+        {
+            Debug.Log("speed = 7");
+            enemy.agent.speed = 7f;
+        }
     }
 
     public override void DoExitLogic()
@@ -31,15 +48,17 @@ public class enemyChaseDirectPlayer : EnemyChaseBase
             enemy.StateMachine.ChangeState(enemy.IdleState);
             return;
         }
-         
+
+       
+
         enemy.agent.SetDestination(_player.position);
 
         if (enemy.IsWithinAttack)
         {
             enemy.StateMachine.ChangeState(enemy.AttackState);
         }
-
     }
+
 
 
     public override void DoPhysicsLogic()

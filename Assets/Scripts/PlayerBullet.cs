@@ -3,6 +3,7 @@ using UnityEngine;
 public class PlayerBullet : MonoBehaviour
 {
     public float lifetime = 6f;
+    public float damage = 10f;
 
     private void Awake()
     {
@@ -13,9 +14,15 @@ public class PlayerBullet : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Enemy"))
         {
-            Destroy(collision.gameObject);
-            //save bullet hits
-            PlayerStats.Instance.SaveHits();
+           Enemys enemy = collision.gameObject.GetComponent<Enemys>();
+
+            if (enemy != null)
+            {
+                enemy.Damage(damage);
+                //save bullet hits
+                PlayerStats.Instance.SaveHits();
+            }
+          
         }
        
         Destroy(gameObject);

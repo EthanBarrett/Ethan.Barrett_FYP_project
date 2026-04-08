@@ -26,9 +26,12 @@ public class Enemys : MonoBehaviour, IDamage, IEnemyMove, ITriggerCheck
     public enemyAttack AttackState { get; set; }
 
 
-
+    //speed
     public float MovementRange = 5f;
     public float MovementSpeed = 2f;
+
+    //spawner
+    public enemySpawner spawner;
 
     public Vector3 StartPosition { get; set; }
 
@@ -49,10 +52,12 @@ public class Enemys : MonoBehaviour, IDamage, IEnemyMove, ITriggerCheck
 
     public EnemyAttackBase EnemyAttackBaseInstance { get; set; }
 
-
-
+    [System.Obsolete]
     private void Awake()
     {
+        CurrentHealth = MaxHealth;
+
+        spawner = FindObjectOfType<enemySpawner>();
 
         EnemyIdleBaseInstance = Instantiate(enemyIdleBase);
         EnemyChaseBaseInstance = Instantiate(enemyChaseBase);
@@ -92,6 +97,12 @@ public class Enemys : MonoBehaviour, IDamage, IEnemyMove, ITriggerCheck
         StateMachine.CurrentEnemyState.FrameUpdate();
     }
 
+    public void InitializeEnemy()
+    {
+        CurrentHealth = MaxHealth;
+        Debug.Log("enemy health" + CurrentHealth);
+    }
+
     // private void FixedUpdate()
     // {
     //  
@@ -112,6 +123,14 @@ public class Enemys : MonoBehaviour, IDamage, IEnemyMove, ITriggerCheck
 
     public void Die()
     {
+     
+        PlayerStats.Instance.CalculateAccuracy();
+        PlayerStats.Instance.ResetStats();
+
+
+        spawner.SpawnEnemy();
+     
+
         Destroy(gameObject);
     }
 
