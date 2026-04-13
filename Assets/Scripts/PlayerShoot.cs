@@ -18,6 +18,7 @@ public class PlayerShoot : MonoBehaviour
 
             //save player shots
             PlayerStats.Instance.SaveShots();
+           
             
         }
 

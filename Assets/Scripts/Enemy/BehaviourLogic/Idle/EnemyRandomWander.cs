@@ -5,14 +5,44 @@ using UnityEngine.AI;
 public class EnemyIdleRandomWander : EnemyIdleBase
 {
     private Vector3 _targetPos;
+    private Transform _player;
+  
     public override void DoEnterLogic()
     {
         base.DoEnterLogic();
 
-        _targetPos = GetRandomPoint();
+        float aggression = PlayerStats.Instance.Aggression;
+
+        //speed will change depending on aggression
+        if (aggression > 70f)
+        {
+            enemy.agent.speed = 5f; //playing safe
+
+            //move away from player
+            Vector3 direction = (enemy.transform.position - _player.position).normalized;
+            _targetPos = enemy.transform.position + direction * enemy.MovementRange;
+        }
+
+        else if (aggression < 30f)
+        {
+            enemy.agent.speed = 10f; //searching
+            
+            //go to player
+            Vector3 direction = (_player.position - enemy.transform.position).normalized;
+            _targetPos = enemy.transform.position + direction * Random.Range(10f, enemy.MovementRange);
+        }
+
+        else
+        {
+            enemy.agent.speed = 3f; //normal
+
+            _targetPos = GetRandomPoint();
+        }
+
+        
         enemy.MoveEnemy(_targetPos);
 
-        enemy.agent.speed = 5f;
+        
     }
 
     public override void DoExitLogic()
@@ -24,9 +54,26 @@ public class EnemyIdleRandomWander : EnemyIdleBase
     {
         base.DoFrameUpdateLogic();
 
+        if (enemy.IsWithinAttack)
+        {
+            enemy.StateMachine.ChangeState(enemy.AttackState);
+            return;
+        }
+
         if (enemy.IsAggroed)
         {
-            enemy.StateMachine.ChangeState(enemy.ChaseState);
+            float aggression = PlayerStats.Instance.Aggression;
+
+            if (aggression < 30f)
+            {
+                // passive player it will chase
+                enemy.StateMachine.ChangeState(enemy.ChaseState);
+            }
+            else
+            {
+
+            }
+           
         }
 
         if (!enemy.agent.pathPending && enemy.agent.remainingDistance <= enemy.agent.stoppingDistance)
@@ -45,6 +92,9 @@ public class EnemyIdleRandomWander : EnemyIdleBase
     public override void Initialize(GameObject gameObject, Enemys enemys)
     {
         base.Initialize(gameObject, enemys);
+        _player = GameObject.FindGameObjectWithTag("Player").transform;
+
+
     }
 
     public override void ResetValues()
@@ -54,13 +104,9 @@ public class EnemyIdleRandomWander : EnemyIdleBase
 
     private Vector3 GetRandomPoint()
     {
-        // return enemy.transform.position + (Vector3)UnityEngine.Random.insideUnitSphere * enemy.MovementRange;
+       
 
-        //  Vector3 randomPoint = Random.insideUnitSphere * enemy.MovementRange;
-        // randomPoint.y = 0f;
-
-        // return enemy.transform.position + randomPoint;
-
+      
         Vector3 randomPoint = enemy.StartPosition + Random.insideUnitSphere * enemy.MovementRange;
 
         if (NavMesh.SamplePosition(randomPoint, out NavMeshHit hit, enemy.MovementRange, NavMesh.AllAreas))

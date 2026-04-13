@@ -19,7 +19,7 @@ public class Timer : MonoBehaviour
             timerText.color = Color.red;
         }
 
-        goneTime -= Time.deltaTime;
+       
         int minutes = Mathf.FloorToInt(goneTime / 60);
         int seconds = Mathf.FloorToInt(goneTime % 60);
 

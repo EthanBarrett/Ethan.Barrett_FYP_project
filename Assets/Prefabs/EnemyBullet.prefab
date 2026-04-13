@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 6857519356216981228}
   - component: {fileID: 8259125612829094173}
   - component: {fileID: 9029045440597286766}
+  - component: {fileID: -1732554700935982855}
   m_Layer: 0
   m_Name: EnemyBullet
   m_TagString: Untagged
@@ -66,7 +67,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: dccc234d044ee6049b5ee9bb9520fae7, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -136,3 +137,17 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &-1732554700935982855
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1537360819166988065}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 408b6f02405e60a4985c8a1a65505997, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damageP: 10
+  life: 5

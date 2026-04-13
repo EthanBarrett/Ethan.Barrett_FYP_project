@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class PlayerBullet : MonoBehaviour
 {
-    public float lifetime = 6f;
+    public float lifetime = 4f;
     public float damage = 10f;
 
     private void Awake()
