@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class PlayerStats : MonoBehaviour
@@ -21,12 +22,19 @@ public class PlayerStats : MonoBehaviour
     public float timeMoved = 0f;
     public float timeIdle = 0f;
 
+    public float freezeMobility;
+    public float freezeAccuracy;
+    public float freezeAggression;
+
+    private bool active = false;
+
     [SerializeField] private float moveThreshold = 0.1f;
 
     private float resetTimer = 60f;
     [SerializeField] private float resetInterval = 60f;
 
-
+    //death
+    public int deaths = 0;
 
    
     /// //////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -56,11 +64,31 @@ public class PlayerStats : MonoBehaviour
 
         shootTime = 0f;
         notShooting = 0f;
+
+        timeMoved = 0f;
+        timeIdle = 0f;
     }
 
     private void Awake()
     {
         Instance = this;
+        lastPosition = transform.position;
+
+
+    }
+
+    void Start()
+    {
+        Invoke(nameof(EnableStats), 3f);
+    }
+
+    void EnableStats()
+    {
+        active = true;
+
+        timeMoved = 0f;
+        timeIdle = 0f;
+
         lastPosition = transform.position;
     }
 
@@ -86,6 +114,12 @@ public class PlayerStats : MonoBehaviour
 
      void Update()
     {
+        if (!active)
+        {
+            lastPosition = transform.position;
+            return;
+        }
+
         if (isShooting)
         {
             shootTime += Time.deltaTime;
@@ -120,7 +154,20 @@ public class PlayerStats : MonoBehaviour
 
             resetTimer = resetInterval;
         }
-        
+
+        if (Input.GetKeyDown(KeyCode.K))
+        {
+            deaths++;
+            Debug.Log("Deaths: " + deaths);
+        }
+
+        if (Input.GetKeyDown(KeyCode.L))
+        {
+
+            Debug.Log("Deaths sclaing: " + DeathScale);
+        }
+
+       
     }
 
     //plater Aggression
@@ -153,11 +200,29 @@ public class PlayerStats : MonoBehaviour
         get
         {
             float total = timeMoved + timeIdle;
-            if (total == 0) return 0f;
+            if (total < 1f ) return 0f;
 
             return (timeMoved / total) * 100f;
         }
     }
+
+    public float DeathScale
+    {
+        get
+        {
+            return Mathf.Min(1f + (deaths * 0.1f), 3f); //20% per death
+        }
+    }
+
+    public void DeathStats()
+    {
+        deaths++;
+
+        freezeAccuracy = Accuracy;
+        freezeAggression = Aggression;
+        freezeMobility = Mobility;
+    }
+   
    
 
 }

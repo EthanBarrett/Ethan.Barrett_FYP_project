@@ -6,18 +6,23 @@ public class EnemyAttackProjectile : EnemyAttackBase
     private Transform _playerTransform;
     [SerializeField] private Rigidbody EnemyBulletPrefab;
     private float _timer;
-    [SerializeField] private float _timeBetweenShots = 2f;
-
+    [SerializeField] private float _timeBetweenShots = 1.5f;
+    
     private float _exitTimer;
     [SerializeField] private float _timeTillExit = 3f;
     [SerializeField] private float _distanceToCountExit = 3f;
 
     [SerializeField] private float BulletSpeed = 20f;
+
+    private float nextFire = 0f;
+    private float smooth;
     public override void DoEnterLogic()
     {
         base.DoEnterLogic();      
 
         enemy.agent.ResetPath();
+
+        _timer = 0f;
     }
 
     public override void DoExitLogic()
@@ -30,25 +35,62 @@ public class EnemyAttackProjectile : EnemyAttackBase
     public override void DoFrameUpdateLogic()
     {
         base.DoFrameUpdateLogic();
+        
+       
 
-        float mobility = Mathf.Clamp(PlayerStats.Instance.Mobility, 0f, 100f);
 
-        float rateOfFire = _timeBetweenShots;
+        //float mobility = Mathf.Clamp(PlayerStats.Instance.Mobility, 0f, 100f);
+        // smooth = Mathf.Lerp(smooth, PlayerStats.Instance.Mobility, Time.deltaTime * 5f);
+        // float mobility = smooth;
 
-        if (mobility > 70f)
+        float mobility = PlayerStats.Instance.freezeMobility;
+        float accuracy = PlayerStats.Instance.freezeAccuracy;
+        float Aggression = PlayerStats.Instance.freezeAggression;
+
+        bool shouldStrafe = mobility >= 60f;
+
+       // float accuracy = PlayerStats.Instance.fightResults;
+        
+        float rateOfFire;
+        
+        if (mobility >= 70f)
+        {
+            rateOfFire = 1.2f;
+        }
+        else if (mobility >= 40f)
+        {
+            rateOfFire = 1.7f;
+        }
+        else
         {
             rateOfFire = 0.8f;
         }
-        else if (mobility < 30f)
+
+        if (shouldStrafe)
         {
-            rateOfFire = 2.5f;
+
+
+            enemy.agent.isStopped = false;
+
+            Vector3 toPlayer = (_playerTransform.position - enemy.transform.position).normalized;
+            Vector3 side = Vector3.Cross(toPlayer, Vector3.up);
+
+            float strafe = 20f;
+            float offset = 3f;
+
+
+            Vector3 moveTarget = _playerTransform.position + side * Mathf.Sin(Time.time * 2f) * strafe + toPlayer * -offset;
+
+
+            enemy.agent.SetDestination(moveTarget);
         }
 
-        if (_timer > rateOfFire)
+
+        if (Time.time >= nextFire)
         {
-            _timer = 0f;
+            nextFire = Time.time + rateOfFire;
 
-
+            //Debug.Log("Rate of fire: " + rateOfFire);
 
             Vector3 target = _playerTransform.position;
 
@@ -65,9 +107,16 @@ public class EnemyAttackProjectile : EnemyAttackBase
 
             Vector3 dir = (target - enemy.transform.position).normalized;
 
-            if (mobility > 70f)
+            if (mobility < 20f)
             {
-                float spread = 0.5f;
+                dir = (_playerTransform.position - enemy.transform.position).normalized;
+            }
+            else
+            {
+                dir = (target - enemy.transform.position).normalized;
+
+                float spread = Mathf.Lerp(0.5f, 0f, accuracy / 100f);
+
 
                 dir.x += Random.Range(-spread, spread);
                 dir.z += Random.Range(-spread, spread);
@@ -76,16 +125,71 @@ public class EnemyAttackProjectile : EnemyAttackBase
             }
 
 
+
+            if (accuracy < 60f)
+            {
+                float spread = Mathf.Lerp(0.5f, 0f, accuracy / 100f);
+
+                dir.x += Random.Range(-spread, spread);
+                dir.z += Random.Range(-spread, spread);
+
+                dir.Normalize();
+            }
+
+
+            //spawn bullet
             Vector3 spawnPos = enemy.transform.position + dir * 0.5f;
 
-            Rigidbody bullet = GameObject.Instantiate(EnemyBulletPrefab, spawnPos, Quaternion.identity);
+            bool shotgun = accuracy < 40f && Aggression > 60f;
 
-            bullet.linearVelocity = dir * BulletSpeed;
+            int pellet = shotgun ? 5 : 1;
+            float spreadAmout = shotgun ? 0.4f : Mathf.Lerp(0.2f, 0.05f, accuracy / 100f);
 
-            Object.Destroy(bullet.gameObject, 10f);
+            for (int i = 0; i < pellet; i++)
+            {
 
+                Vector3 shot = dir;
+
+                //spread the pellet
+                shot.x += Random.Range(-spreadAmout, spreadAmout);
+                shot.z += Random.Range(-spreadAmout, spreadAmout);
+                shot.Normalize();
+
+                Rigidbody bullet = GameObject.Instantiate(EnemyBulletPrefab, spawnPos, Quaternion.identity);
+
+                //  bullet.linearVelocity = dir * BulletSpeed;
+
+
+                float baseSpeed = BulletSpeed;
+
+                //scale with player
+                float mobliltyLevel = Mathf.Lerp(0.8f, 1.3f, mobility / 100f);
+                float accuracyLevel = Mathf.Lerp(0.9f, 1.2f, accuracy / 100f);
+                float aggressionLevel = Mathf.Lerp(0.8f, 1.4f, PlayerStats.Instance.Aggression / 100f);
+
+                //combine them
+                float finalspeed = baseSpeed * mobliltyLevel * accuracyLevel * aggressionLevel;
+
+                //add random shoot
+                finalspeed *= Random.Range(0.9f, 1.1f);
+
+                //apply
+                bullet.linearVelocity = dir * finalspeed;
+
+                EnemyBullet bulletScript = bullet.GetComponent<EnemyBullet>();
+                if (bulletScript != null)
+                {
+                    float scale = PlayerStats.Instance.DeathScale;
+                    bulletScript.damageP = bulletScript.damageStart * scale;
+
+                    //  Debug.Log("bullet damage: " + bulletScript.damageP);
+                }
+
+                Object.Destroy(bullet.gameObject, 10f);
+            }
+            /*
             //at spread fire to bullets
-            if (PlayerStats.Instance.Mobility > 70f)
+            if (PlayerStats.Instance.Mobility > 80f)
             {
                 enemy.agent.isStopped = false;
 
@@ -100,6 +204,9 @@ public class EnemyAttackProjectile : EnemyAttackBase
             {
                 enemy.agent.isStopped = true;
             }
+            */
+
+           
 
         }
 

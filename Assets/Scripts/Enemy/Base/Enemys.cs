@@ -89,6 +89,8 @@ public class Enemys : MonoBehaviour, IDamage, IEnemyMove, ITriggerCheck
 
         StateMachine.Initialize(IdleState);
 
+        
+
 
     }
 
@@ -99,8 +101,14 @@ public class Enemys : MonoBehaviour, IDamage, IEnemyMove, ITriggerCheck
 
     public void InitializeEnemy()
     {
+        float scaledeath = PlayerStats.Instance.DeathScale;
+
         CurrentHealth = MaxHealth;
-        Debug.Log("enemy health" + CurrentHealth);
+       // Debug.Log("enemy health" + CurrentHealth);
+
+     //   Debug.Log("enemy damage: " + damage);
+
+
     }
 
     // private void FixedUpdate()
@@ -123,7 +131,8 @@ public class Enemys : MonoBehaviour, IDamage, IEnemyMove, ITriggerCheck
 
     public void Die()
     {
-     
+        PlayerStats.Instance.DeathStats();
+
         PlayerStats.Instance.CalculateAccuracy();
         PlayerStats.Instance.ResetStats();
 

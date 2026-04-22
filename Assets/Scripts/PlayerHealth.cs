@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class PlayerHealth : MonoBehaviour
 {
-    public float maxH = 50f;
+    public float maxH = 100f;
     public float currentH;
 
     [SerializeField] private Transform spawnPoint;

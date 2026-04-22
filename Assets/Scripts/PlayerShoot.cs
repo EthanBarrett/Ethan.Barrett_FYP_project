@@ -8,19 +8,23 @@ public class PlayerShoot : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetMouseButtonDown(0))
+        if(!PauseMenu.isPaused)
         {
-            Vector3 spawnPos = bulletSpawn.position + bulletSpawn.forward * 0.5f;
-            var bullet = Instantiate(bulletprefab, spawnPos, bulletSpawn.rotation);
+            if (Input.GetMouseButtonDown(0))
+            {
+                Vector3 spawnPos = bulletSpawn.position + bulletSpawn.forward * 0.5f;
+                var bullet = Instantiate(bulletprefab, spawnPos, bulletSpawn.rotation);
 
-            Rigidbody rb = bullet.GetComponent<Rigidbody>();
-            rb.linearVelocity = bulletSpawn.forward * bulletspeed;
+                Rigidbody rb = bullet.GetComponent<Rigidbody>();
+                rb.linearVelocity = bulletSpawn.forward * bulletspeed;
 
-            //save player shots
-            PlayerStats.Instance.SaveShots();
-           
-            
+                //save player shots
+                PlayerStats.Instance.SaveShots();
+
+
+            }
         }
+        
 
         
 

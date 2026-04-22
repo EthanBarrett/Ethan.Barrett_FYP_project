@@ -6,17 +6,27 @@ public class Timer : MonoBehaviour
     [SerializeField] TextMeshProUGUI timerText;
     [SerializeField] float goneTime;
 
-    // Update is called once per frame
+    [SerializeField] GameObject survey;
+    private bool ended = false;
+
+     void Start()
+    {
+        survey.SetActive(false);
+    }
     void Update()
     {
         if (goneTime > 0)
         {
             goneTime -= Time.deltaTime;
         }
-        else if (goneTime < 0)
+        else if (!ended)
         {
             goneTime = 0;
             timerText.color = Color.red;
+
+            ended = true;
+
+            Survey();
         }
 
        
@@ -26,5 +36,15 @@ public class Timer : MonoBehaviour
         timerText.text = string.Format("{0:00}:{1:00}", minutes, seconds);
         
         
+    }
+
+    void Survey()
+    {
+        survey.SetActive(true);
+
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+
+       // Time.timeScale = 0f;
     }
 }

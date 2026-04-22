@@ -10,7 +10,7 @@ public class enemyChaseDirectPlayer : EnemyChaseBase
     private float zTimer;
     private float zInterval = 0.5f;
     private int zDirection = 1;
-    private float zAmount = 3f;
+   // private float zAmount = 3f;
 
     private Vector3 currentZ;
     private bool hasTarget;
